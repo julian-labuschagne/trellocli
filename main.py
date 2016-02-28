@@ -19,16 +19,17 @@ def get_trello_object(cfg):
     )
     return client
 
-cfg = get_config()
-client = get_trello_object(cfg)
+if __name__ == "__main__":
+    cfg = get_config()
+    client = get_trello_object(cfg)
 
-"""Get a list of all the Trello Boards"""
-boards = client.list_boards()
+    """Get a list of all the Trello Boards"""
+    boards = client.list_boards()
 
-"""Print information from Boards"""
-for board in boards:
-    print(board.id)
-    print(board.name.decode('utf-8'))
+    """Print information from Boards"""
+    for board in boards:
+        print(board.id)
+        print(board.name.decode('utf-8'))
 
-    for member in board.get_members():
-        print('\t{}'.format(member.full_name.decode('utf-8')))
+        for member in board.get_members():
+            print('\t{}'.format(member.full_name.decode('utf-8')))
