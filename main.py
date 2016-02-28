@@ -1,3 +1,4 @@
+import argparse
 import yaml
 from os.path import expanduser
 from trello import TrelloClient
@@ -23,13 +24,21 @@ if __name__ == "__main__":
     cfg = get_config()
     client = create_trello_object(cfg)
 
-    """Get a list of all the Trello Boards"""
-    boards = client.list_boards()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--list", action="store_true", help="List Boards")
+    parser.add_argument("-b", "--board", help="Trello Board")
+    args = parser.parse_args()
 
-    """Print information from Boards"""
-    for board in boards:
-        print(board.id)
-        print(board.name.decode('utf-8'))
+    if args.list:
+        """List of all the Trello Boards"""
+        boards = client.list_boards()
 
-        for member in board.get_members():
-            print('\t{}'.format(member.full_name.decode('utf-8')))
+        """Print information from Boards"""
+        for board in boards:
+            print(board.id)
+            print(board.name.decode('utf-8'))
+
+            for member in board.get_members():
+                print('\t{}'.format(member.full_name.decode('utf-8')))
+    if args.board:
+        print("Chosen board")
