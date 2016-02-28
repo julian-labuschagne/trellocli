@@ -2,18 +2,25 @@ import yaml
 from os.path import expanduser
 from trello import TrelloClient
 
-"""Load trello user credentials from yaml file"""
-home = expanduser("~")
-with open('{}/.trello-config.yml'.format(home), 'r') as ymlfile:
-    cfg = yaml.load(ymlfile)
+def get_config():
+    """Load trello user credentials from yaml file"""
+    home = expanduser("~")
+    with open('{}/.trello-config.yml'.format(home), 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        return cfg
 
-"""Create a new TrelloClient Object using the proper user credentials"""
-client = TrelloClient(
-api_key=cfg['trello']['api_key'],
-api_secret=cfg['trello']['api_secret'],
-token=cfg['trello']['token'],
-token_secret=cfg['trello']['token_secret']
-)
+def get_trello_object(cfg):
+    """Create a new TrelloClient Object using the proper user credentials"""
+    client = TrelloClient(
+    api_key=cfg['trello']['api_key'],
+    api_secret=cfg['trello']['api_secret'],
+    token=cfg['trello']['token'],
+    token_secret=cfg['trello']['token_secret']
+    )
+    return client
+
+cfg = get_config()
+client = get_trello_object(cfg)
 
 """Get a list of all the Trello Boards"""
 boards = client.list_boards()
