@@ -3,6 +3,23 @@ import yaml
 from os.path import expanduser
 from trello import TrelloClient
 
+class TrelloCli:
+
+    """ Load Trello api keys from yaml file"""
+    def __init__(self, file='config.yml'):
+        with open(file, 'r') as stream:
+            try:
+                config = yaml.safe_load(stream)
+                self.__key = config('key')
+                self.__token = config('token')
+                self.__client = TrelloClient(
+                    api_key = config('key'),
+                    api_secret = config('secret')
+                )
+            except:
+                yaml.YAMLError as exc:
+                    print(exc)
+
 def get_config():
     """Load trello user credentials from yaml file"""
     home = expanduser("~")
