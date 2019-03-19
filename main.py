@@ -5,20 +5,31 @@ from trello import TrelloClient
 
 class TrelloCli:
 
-    """ Load Trello api keys from yaml file"""
     def __init__(self, file='config.yml'):
+        """ Load Trello api keys from yaml file"""
         with open(file, 'r') as stream:
             try:
                 config = yaml.safe_load(stream)
-                self.__key = config('key')
-                self.__token = config('token')
                 self.__client = TrelloClient(
-                    api_key = config('key'),
-                    api_secret = config('secret')
+                    api_key = config['key'],
+                    api_secret = config['token']
                 )
-            except:
-                yaml.YAMLError as exc:
+            except yaml.YAMLError as exc:
                     print(exc)
+
+    def get_board(self, board_name):
+        """ Get the board id from the board name """
+        boards = self.__client.list_boards()
+        for board in boards:
+            if board.name == board_name:
+                return self.__client.get_board(board.id)
+    def get_list(self, board, list_name):
+        lists = board.all_lists()
+        for list in lists:
+            if list.name == list_name:
+                return board.get_list(list.id)
+
+
 
 def get_config():
     """Load trello user credentials from yaml file"""
@@ -45,29 +56,13 @@ def get_trello_list(client, board_name, list_name):
                 return board_list
 
 if __name__ == "__main__":
-    cfg = get_config()
-    client = create_trello_object(cfg)
 
-    """Create the parser object and add arguments"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--list", action="store_true", help="List Boards")
-    parser.add_argument("-c", "--create", action="store_true", help="List Boards")
-    parser.add_argument("-B", "--board", help="Trello Board Name")
-    parser.add_argument("-C", "--card", help="Trello Card Name")
-    parser.add_argument("-L", "--list-name", help="Trello List Name")
-    args = parser.parse_args()
+    trello = TrelloCli()
 
-    if args.list:
-        """List of all the Trello Boards"""
-        boards = client.list_boards()
+    board = trello.get_board('Test Board')
+    todo_list = trello.get_list(board, 'Todo')
+    new_card = todo_list.add_card(name='TEST CARD PyYaml', desc='This is the card description')
 
-        """Print Board information"""
-        for board in boards:
-            print("{}\t{}".format(board.id, board.name.decode('utf-8')))
-
-    if args.create:
-        if args.card != "":
-            print("Create a new card")
-            #print(dir(get_trello_list(client, args.board, args.list_name)))
-            new_card = get_trello_list(client, args.board, args.list_name).add_card("New Card Created By Python Script", desc="This card was created by a Python Script called trellocli https://github.com/julian-labuschagne/trellocli")
-            print(new_card)
+    print('Board ID : {id}'.format(id=board.id))
+    print('List ID  : {id}'.format(id=todo_list.id))
+    print('Card ID  : {id}'.format(id=new_card.id))
