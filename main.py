@@ -37,24 +37,6 @@ class TrelloCli:
                 return member
 
 
-
-def create_trello_object(cfg):
-    """Create a new TrelloClient Object using the proper user credentials"""
-    client = TrelloClient(
-        api_key=cfg['trello']['api_key'],
-        api_secret=cfg['trello']['api_secret'],
-        token=cfg['trello']['token'],
-        token_secret=cfg['trello']['token_secret']
-    )
-    return client
-
-def get_trello_list(client, board_name, list_name):
-    for board in client.list_boards():
-        if board_name == board.name.decode('utf-8'):
-            print(board.name.decode('utf-8'))
-            for board_list in board.all_lists():
-                return board_list
-
 if __name__ == "__main__":
 
     trello = TrelloCli()
