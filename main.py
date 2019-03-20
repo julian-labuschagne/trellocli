@@ -23,13 +23,18 @@ class TrelloCli:
         for board in boards:
             if board.name == board_name:
                 return self.__client.get_board(board.id)
+
     def get_list(self, board, list_name):
         lists = board.all_lists()
         for list in lists:
             if list.name == list_name:
                 return board.get_list(list.id)
 
-
+    def get_member(self, board, member_name):
+        members = board.all_members()
+        for member in members:
+            if member.full_name == member_name:
+                return member
 
 def get_config():
     """Load trello user credentials from yaml file"""
@@ -61,8 +66,10 @@ if __name__ == "__main__":
 
     board = trello.get_board('Test Board')
     todo_list = trello.get_list(board, 'Todo')
+    member = trello.get_member(board, 'Julian Labuschagne')
     new_card = todo_list.add_card(name='TEST CARD PyYaml', desc='This is the card description')
 
-    print('Board ID : {id}'.format(id=board.id))
-    print('List ID  : {id}'.format(id=todo_list.id))
-    print('Card ID  : {id}'.format(id=new_card.id))
+    print('Board ID  : {id}'.format(id=board.id))
+    print('List ID   : {id}'.format(id=todo_list.id))
+    print('Member ID : {id}'.format(id=member.id))
+    print('Card ID   : {id}'.format(id=new_card.id))
