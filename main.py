@@ -36,12 +36,7 @@ class TrelloCli:
             if member.full_name == member_name:
                 return member
 
-def get_config():
-    """Load trello user credentials from yaml file"""
-    home = expanduser("~")
-    with open('{}/.trello-config.yml'.format(home), 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
-        return cfg
+
 
 def create_trello_object(cfg):
     """Create a new TrelloClient Object using the proper user credentials"""
