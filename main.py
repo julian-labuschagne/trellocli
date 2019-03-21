@@ -37,6 +37,11 @@ class TrelloCli:
             if member.full_name == member_name:
                 return member
 
+    def display_cards(self, trello_list):
+        cards = trello_list.list_cards()
+        for card in cards:
+            print(card.name)
+
 if __name__ == "__main__":
 
     trello = TrelloCli()
@@ -66,3 +71,5 @@ if __name__ == "__main__":
     print('List ID   : {id}'.format(id=todo_list.id))
     print('Member ID : {id}'.format(id=member.id))
     print('Card ID   : {id}'.format(id=new_card.id))
+
+    trello.display_cards(todo_list)
