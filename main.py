@@ -46,30 +46,76 @@ if __name__ == "__main__":
 
     trello = TrelloCli()
 
-    board = trello.get_board('Test Board')
-    todo_list = trello.get_list(board, 'Todo')
-    member = trello.get_member(board, 'Julian Labuschagne')
 
-    # Prepare a date
-    date_time_str = '2019-03-21 13:00:00.000000'
-    date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+    # board = trello.get_board('Test Board')
+    # todo_list = trello.get_list(board, 'Todo')
+    # member = trello.get_member(board, 'Julian Labuschagne')
+    #
+    # # Prepare a date
+    # date_time_str = '2019-03-21 13:00:00.000000'
+    # date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+    #
+    # # Prepare a list of Todo items
+    # list_items = {
+    #     'Item 01',
+    #     'Item 02',
+    #     'Item 03'
+    # }
+    #
+    # # Create a new card
+    # new_card = todo_list.add_card(name='TEST CARD PyYaml', desc='This is the card description')
+    # new_card.set_due(date_time_obj)
+    # new_card.add_member(member)
+    # new_card.add_checklist('Todo', list_items)
+    #
+    # print('Board ID  : {id}'.format(id=board.id))
+    # print('List ID   : {id}'.format(id=todo_list.id))
+    # print('Member ID : {id}'.format(id=member.id))
+    # print('Card ID   : {id}'.format(id=new_card.id))
+    #
+    # trello.display_cards(todo_list)
 
-    # Prepare a list of Todo items
-    list_items = {
-        'Item 01',
-        'Item 02',
-        'Item 03'
-    }
+    # Create a new instance of argparse
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help='sub-command help', dest='mode')
 
-    # Create a new card
-    new_card = todo_list.add_card(name='TEST CARD PyYaml', desc='This is the card description')
-    new_card.set_due(date_time_obj)
-    new_card.add_member(member)
-    new_card.add_checklist('Todo', list_items)
+    add_card_parser = subparsers.add_parser('add-card', help='Add card parser help')
+    add_card_parser.add_argument('--board')
+    add_card_parser.add_argument('--list')
+    add_card_parser.add_argument('--name')
+    add_card_parser.add_argument('--due')
 
-    print('Board ID  : {id}'.format(id=board.id))
-    print('List ID   : {id}'.format(id=todo_list.id))
-    print('Member ID : {id}'.format(id=member.id))
-    print('Card ID   : {id}'.format(id=new_card.id))
+    list_card_parser = subparsers.add_parser('list-cards', help='Add list card parser help')
+    list_card_parser.add_argument('--board')
+    list_card_parser.add_argument('--list')
 
-    trello.display_cards(todo_list)
+
+    # parser.add_argument('addcard', metavar='add-card', help='Create a new trello card')
+    # parser.add_argument('listcards', metavar='list-cards', help='List cards')
+
+    args = parser.parse_args()
+    print(args.mode)
+
+    if args.mode == 'list-cards':
+        # print(args.board)
+        # print(args.list)
+
+        board = trello.get_board(args.board)
+        todo_list = trello.get_list(board, args.list)
+        trello.display_cards(todo_list)
+
+    if args.mode == 'add-card':
+        board = trello.get_board(args.board)
+        todo_list = trello.get_list(board, args.list)
+
+        # Create a new card
+        new_card = todo_list.add_card(name=args.name, desc='This is the card description')
+
+        if args.due:
+            # Prepare a date
+            date_time_str = args.due
+            date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+            new_card.set_due(date_time_obj)
+
+        # new_card.add_member(member)
+        # new_card.add_checklist('Todo', list_items)
