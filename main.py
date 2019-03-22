@@ -42,6 +42,9 @@ class TrelloCli:
         for card in cards:
             print(card.name)
 
+def create_trello_card(board, title, description):
+    board.add_card(title, description)
+
 if __name__ == "__main__":
 
     trello = TrelloCli()
